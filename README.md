@@ -1,4 +1,4 @@
-# 🧠 Brain Tumor MRI Segmentation Using Classical Thresholding
+# 🧠 Brain Tumor MRI Segmentation Using OTSU and Sauvola
 
 ## 📌 Project Overview
 
