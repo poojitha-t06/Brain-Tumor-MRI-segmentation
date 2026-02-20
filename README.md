@@ -1,12 +1,28 @@
-# 🧠 Brain Tumor MRI Segmentation Using OTSU and Sauvola
+# 🏥 Deep Learning for Medical Imaging (CS328) Projects
+
+This repository contains three classical image processing projects implemented as part of **CS328 – Deep Learning for Medical Imaging**.
+
+Each notebook focuses on a different medical imaging segmentation task.
+
+---
+
+# 📁 Projects Included
+
+| Notebook | Project Title |
+|-----------|---------------|
+| `brain_tumor_mri_segmentation.ipynb` | Brain Tumor MRI Segmentation |
+| `retinal_vessel_extraction.ipynb` | Retinal Vessel Extraction |
+| `cell_nuclei_separation.ipynb` | Cell Nuclei Separation |
+
+---
+
+# 1️⃣ Brain Tumor MRI Segmentation
 
 ## 📌 Project Overview
 
 This project evaluates classical image processing techniques for brain tumor segmentation in MRI images.
 
 The objective is to analyze how well traditional thresholding methods (Otsu and Sauvola) perform on medical imaging data and understand the limitations of non-learning-based approaches in tumor segmentation.
-
-This work serves as a **classical baseline study** for brain tumor MRI segmentation.
 
 ---
 
@@ -72,71 +88,137 @@ Classical image processing techniques are insufficient for accurate brain tumor 
 
 This project establishes a classical baseline and highlights the need for spatial learning models (e.g., U-Net) for improved medical image segmentation performance.
 
----   
-
-
-  
-
-  # 🚀 How to Run This Project
-
-## 1️⃣ Clone the Repository
-
-```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
-
-```
-## 2️⃣ Create Virtual Environment (Recommended)
-
-```bash
-python -m venv venv
-```
-
-### Activate Environment
-
-**Windows**
-```bash
-venv\Scripts\activate
-```
 ---
 
+# 2️⃣ Retinal Vessel Extraction
 
-## 3️⃣ Install Required Libraries
+## 📌 Project Overview
 
-```bash
-pip install numpy opencv-python matplotlib scikit-image
-```
+This project evaluates adaptive thresholding techniques for retinal blood vessel segmentation.
 
-If using Jupyter:
-
-```bash
-pip install notebook
-```
+The goal is to compare classical local thresholding methods and analyze their effectiveness in detecting thin vascular structures (through sensitivity).
 
 ---
 
-## 4️⃣ Download Dataset
+## 📂 Dataset
 
-- Download the dataset from the provided link.
-- Extract images and masks into the project directory.
+- DRIVE Retinal Vessel Dataset  
+- Total Training Images Used: **20**
 
-
-- Update dataset paths inside the notebook if necessary.
+🔗 Dataset Link:  
+https://www.kaggle.com/datasets/andrewmvd/drive-digital-retinal-images-for-vessel-extraction/data
 
 ---
 
-## 5️⃣ Run the Notebook
+## 🛠 Methods Implemented
 
-Start Jupyter Notebook:
+### 1️⃣ Preprocessing
+- RGB to Grayscale conversion
+- Normalization
 
-```bash
-jupyter notebook
-```
+### 2️⃣ Segmentation Techniques
+- **Niblack Thresholding**
+- **Sauvola Thresholding**
 
-Open:
+Both methods are adaptive/local thresholding approaches suitable for uneven illumination.
 
-```
-brain_tumor_mri_segmentation.ipynb
-```
+### 3️⃣ Evaluation Metric
+- **Sensitivity (Recall)**
 
-Run all cells sequentially.
+Sensitivity is used because vessel segmentation is highly class-imbalanced (thin vessels vs background).
+
+---
+
+## 📊 Results
+
+| Method   | Average Sensitivity |
+|----------|--------------------|
+| Niblack  | 0.2089 |
+| Sauvola  | 0.9448 |
+
+---
+
+## 🔎 Observations
+
+- Niblack thresholding performs poorly for thin vessel detection.
+- Sauvola significantly improves vessel sensitivity.
+- Adaptive local thresholding is more suitable for retinal vessel segmentation compared to global approaches.
+
+---
+
+# 3️⃣ Cell Nuclei Separation (Watershed Segmentation)
+
+## 📌 Project Overview
+
+This project implements Watershed segmentation to separate overlapping cell nuclei.
+
+The objective is to compare:
+
+- Watershed **without proper marker control**
+- Watershed **with marker-controlled preprocessing**
+
+---
+
+## 📂 Dataset
+
+- Microscopy cell nuclei dataset (stage1_train)
+
+🔗 Dataset Link:  
+https://www.kaggle.com/datasets/mahmudulhasantasin/data-science-bowl-2018-competition-merged-mask
+
+---
+
+## 🛠 Methods Implemented
+
+### 1️⃣ Preprocessing
+- RGB to Grayscale conversion
+- Otsu Binary Thresholding
+
+### 2️⃣ Watershed Without Marker Control
+- Direct distance transform
+- Connected components
+- Watershed segmentation
+
+### 3️⃣ Marker-Controlled Watershed
+- Morphological Opening
+- Sure foreground extraction
+- Sure background estimation
+- Connected component labeling
+- Marker-based watershed
+
+---
+
+## 📊 Evaluation Metrics
+
+- **Dice Score**
+- **Object Count Comparison**
+
+---
+
+## 📈 Results
+
+### 🔹 Dice Score Comparison
+
+| Method | Dice Score |
+|--------|------------|
+| Without Marker Control | 0.7229 |
+| With Marker Control | 0.6454 |
+
+### 🔹 Object Count Comparison
+
+| Category | Count |
+|----------|-------|
+| Ground Truth Nuclei | 28 |
+| Basic Watershed | 18 |
+| Marker Controlled | 14 |
+
+---
+
+## 🔎 Observations
+
+- Basic watershed achieves higher Dice score but under-segments objects.
+- Marker-controlled watershed produces cleaner boundaries but detects fewer nuclei.
+- Proper marker selection significantly affects instance segmentation quality.
+- Classical watershed methods are sensitive to preprocessing choices.
+
+---
