@@ -1,6 +1,6 @@
 # 🏥 Deep Learning for Medical Imaging (CS328) Projects
 
-This repository contains three classical image processing projects implemented as part of **CS328 – Deep Learning for Medical Imaging**.
+This repository contains four classical image processing projects implemented as part of **CS328 – Deep Learning for Medical Imaging**.
 
 Each notebook focuses on a different medical imaging segmentation task.
 
@@ -13,7 +13,7 @@ Each notebook focuses on a different medical imaging segmentation task.
 | `brain_tumor_mri_segmentation.ipynb` | Brain Tumor MRI Segmentation |
 | `retinal_vessel_extraction.ipynb` | Retinal Vessel Extraction |
 | `cell_nuclei_separation.ipynb` | Cell Nuclei Separation |
-
+| `white_bloodcell_segmentation.ipynb` | White Blood Cell Segmentation - K-Means vs Fuzzy C-Means |
 ---
 
 # 1️⃣ Brain Tumor MRI Segmentation
@@ -222,3 +222,97 @@ https://www.kaggle.com/datasets/mahmudulhasantasin/data-science-bowl-2018-compet
 - Classical watershed methods are sensitive to preprocessing choices.
 
 ---
+# 4️⃣ White Blood Cell Segmentation
+
+## 📌 Project Overview
+
+This project focuses on segmenting White Blood Cells (WBCs) from microscopic blood smear images using classical image processing techniques.
+
+The objective is to  Segment WBC nucleus & cytoplasm.
+
+---
+
+## 📂 Dataset
+
+https://dl.raabindata.com/WBC/nucleus_cytoplasm_GT/
+
+---
+
+## 🛠 Methods Implemented
+
+### 1️⃣ Data Preparation
+
+- Input RGB microscopic blood smear images  
+- Ground truth masks (binary)  
+- Pixel reshaping from image → 2D feature space (N × 3)  
+- Normalization of mask (0–1 scaling)  
+
+
+### 2️⃣ K-Means Clustering (Hard Segmentation)
+
+- Number of clusters: 3  
+- Clustering performed on RGB pixel space  
+- Each pixel assigned to exactly one cluster  
+- Cluster means computed  
+- Cluster with lowest intensity selected as nucleus  
+- Binary mask generated from selected cluster  
+
+✔ Hard assignment  
+✔ Fast convergence  
+✘ No uncertainty modeling  
+
+
+### 3️⃣ Fuzzy C-Means (FCM) Clustering (Soft Segmentation)
+
+- Number of clusters: 3  
+- Fuzziness parameter: m = 2  
+- Iterative optimization using membership matrix  
+- Each pixel has soft membership values  
+- Final label selected using argmax of membership  
+- Darkest cluster selected as nucleus  
+
+✔ Handles ambiguity better  
+✔ Soft pixel memberships  
+✘ Computationally heavier than K-Means  
+
+
+---
+
+## 📊 Evaluation Metric
+
+### Dice Coefficient
+
+\[
+Dice = \frac{2|A \cap B|}{|A| + |B|}
+\]
+
+Where:
+
+- **A** = Predicted nucleus mask  
+- **B** = Ground truth mask  
+
+Dice measures overlap between predicted segmentation and ground truth.
+
+
+---
+
+## 📈 Results
+
+### 🔹 Average Dice Score (First 20 Images)
+
+| Method   | Average Dice Score |
+|----------|-------------------|
+| K-Means  |0.868 |
+| FCM      | 0.871 |
+
+
+
+---
+
+## 🔎 Observations
+
+- K-Means performs fast and gives reasonable nucleus segmentation.  
+- FCM models pixel uncertainty better due to soft clustering.  
+- Selecting the correct nucleus cluster (based on minimum mean intensity) is crucial.  
+- Both methods depend heavily on color distribution.  
+- Performance varies with staining variations and lighting.
