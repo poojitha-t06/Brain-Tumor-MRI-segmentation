@@ -13,7 +13,7 @@ Each notebook focuses on a different medical imaging segmentation task.
 | `brain_tumor_mri_segmentation.ipynb` | Brain Tumor MRI Segmentation |
 | `retinal_vessel_extraction.ipynb` | Retinal Vessel Extraction |
 | `cell_nuclei_separation.ipynb` | Cell Nuclei Separation |
-| `white_bloodcell_segmentation.ipynb` | White Blood Cell Segmentation - K-Means vs Fuzzy C-Means |
+| `white_blood_cell_segmentation.ipynb` | White Blood Cell Segmentation - K-Means vs Fuzzy C-Means |
 ---
 
 # 1️⃣ Brain Tumor MRI Segmentation
@@ -226,93 +226,113 @@ https://www.kaggle.com/datasets/mahmudulhasantasin/data-science-bowl-2018-compet
 
 ## 📌 Project Overview
 
-This project focuses on segmenting White Blood Cells (WBCs) from microscopic blood smear images using classical image processing techniques.
+This project performs segmentation of **White Blood Cell (WBC) nucleus** from microscopic blood smear images using two unsupervised clustering methods:
 
-The objective is to  Segment WBC nucleus & cytoplasm.
+- **K-Means (Hard Clustering)**
+- **Fuzzy C-Means (Soft Clustering)**
+
+The goal is to compare hard vs soft clustering and evaluate boundary quality.
 
 ---
 
 ## 📂 Dataset
 
-https://dl.raabindata.com/WBC/nucleus_cytoplasm_GT/
+KRD WBC Dataset  
+
+🔗 Dataset Link: https://www.kaggle.com/datasets/inhvnnhn/krd-wbc-dataset
+
+Dataset Structure:
+
+KRD WBC Dataset/
+- train/
+  - images/
+  - mask/
+
+- Total images used: **480**
+- Each image has a corresponding ground truth mask.
 
 ---
 
 ## 🛠 Methods Implemented
 
-### 1️⃣ Data Preparation
+### 1️⃣ Preprocessing
 
-- Input RGB microscopic blood smear images  
-- Ground truth masks (binary)  
-- Pixel reshaping from image → 2D feature space (N × 3)  
-- Normalization of mask (0–1 scaling)  
+- Images resized to **128 × 128**
+- Converted from **RGB → LAB color space**
+- Only **L channel** used for clustering
+- Masks converted to binary (0 and 1)
 
+---
 
 ### 2️⃣ K-Means Clustering (Hard Segmentation)
 
-- Number of clusters: 3  
-- Clustering performed on RGB pixel space  
-- Each pixel assigned to exactly one cluster  
-- Cluster means computed  
-- Cluster with lowest intensity selected as nucleus  
-- Binary mask generated from selected cluster  
+- Number of clusters: **3**
+- Pixel intensities clustered using K-Means
+- Each pixel assigned to one cluster
+- Darkest cluster selected as nucleus
+- Binary mask generated
 
-✔ Hard assignment  
-✔ Fast convergence  
-✘ No uncertainty modeling  
+✔ Fast  
+✔ Simple  
+✘ No uncertainty handling  
 
+---
 
-### 3️⃣ Fuzzy C-Means (FCM) Clustering (Soft Segmentation)
+### 3️⃣ Fuzzy C-Means (Soft Segmentation)
 
-- Number of clusters: 3  
-- Fuzziness parameter: m = 2  
-- Iterative optimization using membership matrix  
-- Each pixel has soft membership values  
-- Final label selected using argmax of membership  
-- Darkest cluster selected as nucleus  
+- Number of clusters: **3**
+- Fuzziness parameter: **m = 2**
+- Each pixel gets membership values
+- Final label chosen using maximum membership
+- Darkest cluster selected as nucleus
 
-✔ Handles ambiguity better  
-✔ Soft pixel memberships  
-✘ Computationally heavier than K-Means  
-
+✔ Handles ambiguity  
+✔ Soft pixel assignment  
+✘ Slower than K-Means  
 
 ---
 
 ## 📊 Evaluation Metric
 
-### Dice Coefficient
+Boundary-based evaluation was used.
 
-\[
-Dice = \frac{2|A \cap B|}{|A| + |B|}
-\]
+Steps:
+- Morphological gradient applied to get boundaries
+- Compared predicted boundary with ground truth boundary
 
-Where:
-
-- **A** = Predicted nucleus mask  
-- **B** = Ground truth mask  
-
-Dice measures overlap between predicted segmentation and ground truth.
-
+Metrics computed:
+- Accuracy
+- Precision
+- Recall
+- F1-Score
 
 ---
 
-## 📈 Results
+## 📈 Results (Full Dataset – 480 Images)
 
-### 🔹 Average Dice Score (First 20 Images)
+### 🔹 K-Means
 
-| Method   | Average Dice Score |
-|----------|-------------------|
-| K-Means  |0.868 |
-| FCM      | 0.871 |
+- Accuracy: **0.6438**
+- Precision: **0.0347**
+- Recall: **0.5595**
+- F1 Score: **0.0615**
 
+### 🔹 Fuzzy C-Means
 
+- Accuracy: **0.6367**
+- Precision: **0.0337**
+- Recall: **0.5646**
+- F1 Score: **0.0602**
 
 ---
 
 ## 🔎 Observations
 
-- K-Means performs fast and gives reasonable nucleus segmentation.  
-- FCM models pixel uncertainty better due to soft clustering.  
-- Selecting the correct nucleus cluster (based on minimum mean intensity) is crucial.  
-- Both methods depend heavily on color distribution.  
-- Performance varies with staining variations and lighting.
+- Both methods give similar performance.
+- Recall is moderate (~0.56), meaning nucleus boundary is often detected.
+- Precision is low, indicating false boundary detections.
+- FCM slightly improves recall but is computationally slower.
+- K-Means is faster and easier to implement.
+- Results depend strongly on staining variation and intensity distribution.
+---
+
